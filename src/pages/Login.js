@@ -31,16 +31,15 @@ function Login() {
       .then((data) => {
         localStorage.setItem("accessToken", `${data.accessToken}`);
         localStorage.setItem("username", `${username}`);
-        localStorage.setItem("isVerifyLogin", true);
         userStore.changeIsVerifyLogin(true);
-        navigate("/");
+        navigate("/profilim");
       })
       .catch((error) => {
         console.error("Login error:", error); // Handle errors
       });
     console.log(localStorage.getItem("accessToken"));
   };
-  // Kayıt Olma isteği end
+  // Giriş Olma isteği end
   //
 
   return (

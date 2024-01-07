@@ -6,7 +6,7 @@ import Navbar from "react-bootstrap/Navbar";
 import Offcanvas from "react-bootstrap/Offcanvas";
 
 import logo from "../images/logo.png";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import useUserStore from "../states/UserStore";
 import { Dropdown } from "react-bootstrap";
@@ -14,13 +14,18 @@ import { Dropdown } from "react-bootstrap";
 function OffcanvasExample() {
   const [isFocused, setIsFocused] = useState(false);
   const userStore = useUserStore();
+  const navigate = useNavigate();
   const AddTopictoPath = userStore.isVerifyLogin ? "/soru-sor" : "/giris";
   const handleLogOutClicked = () => {
     localStorage.setItem("username", "");
-    localStorage.setItem("isVerifyLogin", false);
     userStore.changeIsVerifyLogin(false);
     localStorage.setItem("accessToken", "");
   };
+  const handleSearchClicked = () => {
+    var formattedTopic = searchTopic.replace(/\s+/g, "-");
+    navigate(`/konular/${formattedTopic}`);
+  };
+  const [searchTopic, setSearchTopic] = useState("");
 
   return (
     <>
@@ -110,29 +115,36 @@ function OffcanvasExample() {
             </h5>
           </Link>
         </div>
-        <div className="addTopic">
-          <Link
-            to={AddTopictoPath}
-            style={{ textDecoration: "none", color: "red" }}
-          >
-            <i
-              class="fa-solid fa-comments"
-              style={{
-                cursor: "pointer",
-                fontSize: "150%",
-                display: "block",
-                margin: "0 auto", // Yatayda ortala
-                marginLeft: "0",
-                color: "#ff2400",
-              }}
-            ></i>
-            <h5
-              style={{ cursor: "pointer", marginTop: "5px", color: "#c4151c" }}
+        {userStore.isVerifyLogin && (
+          <div className="addTopic">
+            <Link
+              to={AddTopictoPath}
+              style={{ textDecoration: "none", color: "red" }}
             >
-              SORU SOR
-            </h5>
-          </Link>
-        </div>
+              <i
+                className="fa-solid fa-comments" // class yerine className
+                style={{
+                  cursor: "pointer",
+                  fontSize: "150%",
+                  display: "block",
+                  margin: "0 auto", // Yatayda ortala
+                  marginLeft: "0",
+                  color: "#ff2400",
+                }}
+              ></i>
+              <h5
+                style={{
+                  cursor: "pointer",
+                  marginTop: "5px",
+                  color: "#c4151c",
+                }}
+              >
+                SORU SOR
+              </h5>
+            </Link>
+          </div>
+        )}
+
         {userStore.isVerifyLogin ? (
           <div style={{ display: "flex", marginLeft: "auto" }}>
             <Dropdown>
@@ -140,7 +152,13 @@ function OffcanvasExample() {
                 {localStorage.getItem("username")}
               </Dropdown.Toggle>
               <Dropdown.Menu>
-                <Dropdown.Item>Profilim</Dropdown.Item>
+                <Dropdown.Item
+                  onClick={() => {
+                    navigate("/profilim");
+                  }}
+                >
+                  Profilim
+                </Dropdown.Item>
                 <Dropdown.Item onClick={handleLogOutClicked}>
                   Çıkış yap
                 </Dropdown.Item>
@@ -211,6 +229,7 @@ function OffcanvasExample() {
                 </Nav>
                 <Form className="d-flex">
                   <Form.Control
+                    onChange={(e) => setSearchTopic(e.target.value)}
                     type="search"
                     placeholder="🔎 Konu Ara"
                     className="me-2"
@@ -223,6 +242,9 @@ function OffcanvasExample() {
                     onBlur={() => setIsFocused(false)}
                   />
                   <Button
+                    onClick={() => {
+                      handleSearchClicked();
+                    }}
                     variant="outline-danger"
                     style={{
                       color: "c4151c",

@@ -58,11 +58,10 @@ function AddTopic() {
       if (!response.ok) {
         throw new Error("Failed to add topic");
       }
-      console.log(selectedCategory);
-      const data = response.json();
+      const data = await response.json(); // Asenkron olarak bekleme
       setTopicID(data.topicID);
-      console.log(topicId);
-      navigate(`/konu/${topicId}`);
+      console.log(selectedCategory);
+      navigate(`/konu/${data.topicID}`);
       console.log("Topic added successfully!");
     } catch (error) {
       console.error("Error adding topic:", error);

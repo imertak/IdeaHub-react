@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from "react";
-import Footer from "../components/Footer";
 import { ListGroup } from "react-bootstrap";
 import { Link } from "react-router-dom";
+import useUserStore from "../states/UserStore";
 
 function Home() {
   const [topics, setTopics] = useState([]);
   const [users, setUsers] = useState([]);
   const [statics, setStatics] = useState({});
+  const userStore = useUserStore();
   const fetchStatics = async () => {
     try {
       const response = await fetch("http://localhost:8080/statics");
@@ -52,10 +53,36 @@ function Home() {
       console.error("There was a problem with the fetch operation:", error);
     }
   };
+
+  const fetchTokenControl = async () => {
+    try {
+      const response = await fetch(
+        `http://localhost:8080/auth/tokenControl/${localStorage.getItem(
+          "accessToken"
+        )}`
+      );
+
+      if (!response.ok) {
+        userStore.changeIsVerifyLogin(false);
+        throw new Error("Network response was not ok");
+      }
+
+      const data = await response.json();
+      console.log("Anlık AccessToken Geçerliliği:", data);
+      {
+        data == true
+          ? userStore.changeIsVerifyLogin(true)
+          : userStore.changeIsVerifyLogin(false);
+      }
+    } catch (error) {
+      console.error("There was a problem with the fetch operation:", error);
+    }
+  };
   useEffect(() => {
     fetchNewTopics();
     fetchNewUsers();
     fetchStatics();
+    fetchTokenControl();
   }, []);
   return (
     <div className="homePage">
@@ -130,7 +157,7 @@ function Home() {
               {users.map((user, index) => (
                 <ListGroup.Item key={index}>
                   <Link
-                    to={`/user/${user.userID}`}
+                    to={`/kullanici/${user.userID}`}
                     style={{
                       fontSize: "12px",
                       textDecoration: "none",
