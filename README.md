@@ -1,4 +1,4 @@
-This project includes a web structure that forums IdeaHub, a platform for integrity sharing and collaboration. IdeaHub allows users to share their creative productivity, improve their projects by getting feedback, and collaborate with other users.
+This project includes a web structure that forms IdeaHub, a platform for integrity sharing and collaboration. IdeaHub allows users to share their creative productivity, improve their projects by getting feedback, and collaborate with other users.
 
 Used technologies:
 
